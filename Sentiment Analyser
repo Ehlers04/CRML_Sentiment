@@ -1,0 +1,15 @@
+import pandas as pd
+import nltk
+from nltk.sentiment import SentimentIntensityAnalyzer
+
+nltk.download("vader_lexicon")
+
+df = pd.read_csv("project_tanbreez.csv")
+
+sia = SentimentIntensityAnalyzer()
+scores = df["text"].apply(sia.polarity_scores).apply(pd.Series)
+
+out = pd.concat([df, scores], axis=1)   # adds: neg, neu, pos, compound
+out.to_csv("project_tanbreez_scored.csv", index=False)
+
+print(out[["Post", "compound"]].sort_values("compound").head(-5))
